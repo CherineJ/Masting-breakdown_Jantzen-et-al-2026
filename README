@@ -4,7 +4,7 @@ This repository contains all analyses and data used for the analyses in Jantzen 
 
 ## Structure
 
-All R scripts are stored in the folder "R". It consists of six main scripts used for different components of the analysis and three helper scripts, containing colour set up and functions that are used within the other scripts (see below for more detail). The folder "plots" contains all figures of the main text and the supplements (marked through the letter "S"). The "data" folder contains all input data files, as well as result data files generated throughout the analysis and used for further analysis. This allows to run scripts independent from each other.
+All R scripts are stored in the folder "R". It consists of six main scripts used for different components of the analysis and three helper scripts, containing colour set up and functions that are used within the other scripts (see below for more details). The folder "plots" contains all figures of the main text and the supplements (marked through the letter "S"). The "data" folder contains all input data files, as well as data files generated throughout the analyses. This allows to run scripts independent from each other.
 
 ### Content of each script
 
