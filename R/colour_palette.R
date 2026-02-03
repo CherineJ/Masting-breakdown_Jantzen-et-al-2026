@@ -14,10 +14,10 @@ col_pred.real_clim<- "#A06CD5"
 
 # colours climate variables
 col_pal <- c("PrecT2" = "#e69f00", 
-             "PrecT1" = "#56b4e9", 
-             "PrecT0" = "#009e73", 
-             "maxTempT2" = "#d55e00",
-             "maxTempT1" = "#cc79a7", 
+             "PrecT1" =  "#009e73", 
+             "PrecT0" = "#cc79a7", 
+             "maxTempT2" = "#56b4e9",
+             "maxTempT1" = "#d55e00", 
              "meanTempT0" = "#0072b2")
 
 # shapes climate variables

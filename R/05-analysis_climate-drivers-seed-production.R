@@ -251,8 +251,8 @@ df_plot_clim <- d_tempInWin %>%
 panel_b_temp <- ggplot2::ggplot(df_plot_clim, 
                                 ggplot2::aes(x = year, y = value, colour = temperature_variable, shape = temperature_variable)) +
   ggplot2::geom_point(size = 2.5) +
-  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT1), linewidth = 1.5, colour = "#cc79a7") +
-  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT0), linewidth = 1.5, colour = "#0072b2") +
+  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT1), linewidth = 1.5, colour = col_pal %>% pluck("maxTempT1")) +
+  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT0), linewidth = 1.5, colour = col_pal %>% pluck("meanTempT0")) +
   ggplot2::geom_point(data = d_tempInWin %>% 
                         tidyr::pivot_longer(cols = "maxTempT2", names_to = "temperature_variable"), size = 2.5) +
   ggplot2::geom_smooth(data = d_tempInWin %>% 
