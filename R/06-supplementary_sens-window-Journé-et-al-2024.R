@@ -164,7 +164,7 @@ spearman_windows <- purrr::map2(.x = combinations$climate_var,
 ) %>% dplyr::bind_rows()
 
 
-## Figure S3: Spearman correlations for mean and max daily temperature and seed production ####
+## Figure S4: Spearman correlations for mean and max daily temperature and seed production ####
 spearman_windows %>% 
   dplyr::filter(is.na(end_dateWin), climate_variable != "sumWinPrec") %>% 
   dplyr::mutate(newDOY_closed = dplyr::case_when(rel_year == "T0" ~ DOY_closed + 723,
@@ -188,5 +188,5 @@ spearman_windows %>%
   ggplot2::facet_wrap(~ climate_variable, nrow = 2, ncol = 1, labeller = labeller(climate_variable = c("meanMeanWinTemp" = "mean daily temperature", "meanMaxWinTemp" = "maximum daily temperature")))
 
 ggplot2::ggsave(plot = ggplot2::last_plot(), 
-                file = here::here("plots", "Figure_S3.png"), 
+                file = here::here("plots", "Figure_S4.png"), 
        units = "cm", width = 30, height = 25, dpi = 600)

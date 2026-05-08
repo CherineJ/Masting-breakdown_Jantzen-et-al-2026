@@ -33,9 +33,3 @@ col_years <- c("1979" = "#0094ff",
                "1992" = "#34AB53", 
                "2007" = "#e8780f", 
                "2023" = "#54428E") 
-
-# levels of CVp (= inverse of synchrony) for which we predict pollination ratios
-col_CVp <- c("0.5" =  "#184e77",
-             "2" =  "#168aad",
-             "3.5" =  "#52b69a",
-             "5" =  "#99d98c")

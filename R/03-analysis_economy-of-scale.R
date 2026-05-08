@@ -2,7 +2,7 @@
 
 # Author:       Cherine C. Jantzen
 # Created:      2025-02-07
-# Last updated: 2026-02-02
+# Last updated: 2026-05-07
 
 ################################
 ## Content: This script looks at the selective benefits of masting by analysing temporal trends in the ratio of predated and pollinated nuts, and by looking at 
@@ -63,7 +63,6 @@ eos <- di %>%
   dplyr::mutate(prop_pred = TotalPredated / TotalNuts, # proportion predated nuts
                 starvation = TotalNuts / TotalNuts_T1, # ratio nuts between T and T1
                 ln_starvation = log(starvation + 1), 
-                conspec_TotalNuts = (sum_TotalNuts -  TotalNuts)/(n_trees - 1), # total nuts of conspecifics
                 pollinated = TotalWhole + TotalPredated, # successfully pollinated nuts (= TotalNuts - TotalEmpty)
                 prop_poll = pollinated / TotalNuts, # proportion of pollinated nuts
                 TreeID = as.factor(TreeID),
@@ -107,13 +106,22 @@ m_pred2 <- glmmTMB::glmmTMB(cbind(TotalPredated, TotalNuts - TotalPredated) ~ or
                             family = binomial(link = "logit"))
 
 summary(m_pred2)
-# non-significant quadratic term for TotalNuts is kept in the model as it was fitted on a priori assumptions
+# While ln_starvation^2 is significant, the linear term explains much more variation, making the quadratic relationship weak. The same applies to the TotalNuts, despite the quadratic term not being significant. We therefore take them borth out of the final model
+
+## Final model starvation-satiation:
+m_pred3 <- glmmTMB::glmmTMB(cbind(TotalPredated, TotalNuts - TotalPredated) ~ ord_year : TotalNuts + ord_year : ln_starvation +
+                              TotalNuts + ord_year + ln_starvation +
+                              (1 | TreeID) +  ar1(factor_year + 0|TreeID),
+                            data = eos_starv,
+                            family = binomial(link = "logit"))
+
+summary(m_pred3)
 
 # Model diagnostics
-glmmTMB::diagnose(m_pred2)
-plot(DHARMa::simulateResiduals(m_pred2))
-DHARMa::testOutliers(DHARMa::simulateResiduals(m_pred2), type = "bootstrap")
-DHARMa::testDispersion(DHARMa::simulateResiduals(m_pred2))
+glmmTMB::diagnose(m_pred3)
+plot(DHARMa::simulateResiduals(m_pred3))
+DHARMa::testOutliers(DHARMa::simulateResiduals(m_pred3), type = "bootstrap")
+DHARMa::testDispersion(DHARMa::simulateResiduals(m_pred3))
 
 
 ## Predict on final model for both effects #####
@@ -134,7 +142,7 @@ sat_pred <- purrr::map(.x = years_to_predict,
                                               ord_year = rep(.x, length(TotalNuts))) 
                          
                          # predict on model only for the range of observed TotalNuts in .x
-                         predictions <- ggeffects::predict_response(m_pred2,
+                         predictions <- ggeffects::predict_response(m_pred3,
                                                                     terms = df,
                                                                     type = "fixed") %>% 
                            as.data.frame() 
@@ -145,14 +153,14 @@ sat_pred <- purrr::map(.x = years_to_predict,
 ) %>% dplyr::bind_rows() 
 
 # reassign calendar years for plotting
-pred_m_pred2 <- sat_pred %>% 
+pred_m_pred3 <- sat_pred %>% 
   dplyr::mutate(Year = dplyr::case_when(group == 4 ~ 1979, 
                                         group == 17 ~ 1992,
                                         group == 32 ~ 2007,
                                         group == 48 ~ 2023))  
 
 ## Figure 2 - panel c: Satiation effect ####
-plot_sat <- ggplot2::ggplot(data = pred_m_pred2, ggplot2::aes(x = x, y = predicted)) +
+plot_sat <- ggplot2::ggplot(data = pred_m_pred3, ggplot2::aes(x = x, y = predicted)) +
   ggplot2::geom_point(data = eos, ggplot2::aes(x = TotalNuts, y = prop_pred), alpha = 0.1, size = 2) +
   ggplot2::geom_line(ggplot2::aes(colour = as.factor(Year)), linewidth = 1.5) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high, 
@@ -168,7 +176,7 @@ plot_sat <- ggplot2::ggplot(data = pred_m_pred2, ggplot2::aes(x = x, y = predict
 
 
 # predict for year effect on proportion predated
-pred_pred_year <- ggeffects::predict_response(m_pred2,
+pred_pred_year <- ggeffects::predict_response(m_pred3,
                                               terms = c("ord_year [all]"))
 
 
@@ -206,7 +214,7 @@ starv_pred <- purrr::map(.x = years_to_predict,
                                                 ord_year = rep(.x, length(ln_starvation))) 
                            
                            # predict only on the range of observed values for year .x
-                           predictions <- ggeffects::predict_response(m_pred2,
+                           predictions <- ggeffects::predict_response(m_pred3,
                                                                       terms = df,
                                                                       type = "fixed") %>% 
                              as.data.frame() 
@@ -246,18 +254,26 @@ plot_starv <- ggplot2::ggplot(data = pred_starv_pred, ggplot2::aes(x = x, y = pr
 ## The pollination efficiency depends on the synchrony of flowering events in the population as the 
 ## probability of successful pollination increases the more pollen there is. 
 
-## Model of the literature
-m_poll <- glmmTMB::glmmTMB(cbind(pollinated, TotalNuts - pollinated) ~ conspec_TotalNuts * CVp  + ord_year +
-                             I(conspec_TotalNuts ^ 2) + I(ord_year^2) +
+## Full model
+m_poll <- glmmTMB::glmmTMB(cbind(pollinated, TotalNuts - pollinated) ~ CVp  * ord_year + 
+                             I(ord_year^2) +
                              (1 | TreeID) +  ar1(factor_year + 0|TreeID),
                            data = eos,
                            family = binomial(link = "logit"))
 
 summary(m_poll)
 
+## drop non-significant interaction term
+m_poll1 <- glmmTMB::glmmTMB(cbind(pollinated, TotalNuts - pollinated) ~ CVp  + ord_year + 
+                             I(ord_year^2) +
+                             (1 | TreeID) +  ar1(factor_year + 0|TreeID),
+                           data = eos,
+                           family = binomial(link = "logit"))
+
+summary(m_poll1)
+
 ## drop non-significant quadratic year term
-m_poll2 <- glmmTMB::glmmTMB(cbind(pollinated, TotalNuts - pollinated) ~ conspec_TotalNuts * CVp  + ord_year + 
-                              I(conspec_TotalNuts ^ 2) +
+m_poll2 <- glmmTMB::glmmTMB(cbind(pollinated, TotalNuts - pollinated) ~ CVp  + ord_year + 
                               (1 | TreeID) +  ar1(factor_year + 0|TreeID),
                             data = eos,
                             family = binomial(link = "logit"))
@@ -268,28 +284,21 @@ summary(m_poll2)
 glmmTMB::diagnose(m_poll2)
 plot(DHARMa::simulateResiduals(m_poll2))
 
-# look for correlation between CVp and nuts of conspecifics
-ggplot2::ggplot(eos, ggplot2::aes(x = CVp, y = conspec_TotalNuts)) +
-  ggplot2::geom_point()
-
 
 ## Predict on final model ####
 
 # get model predictions on the data scale for plotting
 pred_poll <- ggeffects::predict_response(m_poll2,
-                                         terms = c("conspec_TotalNuts [n=30]", "CVp [0.5, 2, 3.5, 5]"))
+                                         terms = "CVp [all]")
 
 ## Figure 2 - panel e: Pollination efficiency ####
 plot_poll <- ggplot2::ggplot(data = pred_poll, ggplot2::aes(x = x, y = predicted)) +
-  ggplot2::geom_point(data = eos, ggplot2::aes(x = conspec_TotalNuts, y = prop_poll), size = 2, alpha = 0.1) +
-  ggplot2::geom_line(linewidth = 1.5, ggplot2::aes(colour = group)) +
-  ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high, colour = group, fill = group), alpha = 0.2) +
-  ggplot2::labs(x = "Number nuts of conspecifics", 
+  ggplot2::geom_point(data = eos, ggplot2::aes(x = CVp, y = prop_poll), size = 2, alpha = 0.1) +
+  ggplot2::geom_line(linewidth = 1.5) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high), alpha = 0.2) +
+  ggplot2::labs(x = "Inverse of synchrony (CVp)", 
                 y = "Proportion of pollinated nuts", 
-                title = "Pollination efficiency",
-                colour = "CVp", fill = "CVp") +
-  ggplot2::scale_colour_manual(values = col_CVp) +
-  ggplot2::scale_fill_manual(values = col_CVp) +
+                title = "Pollination efficiency") +
   ggplot2::theme_classic(base_size = 17) +
   ggplot2::theme(plot.title = ggplot2::element_text(size = 17, hjust = 0.5))
 

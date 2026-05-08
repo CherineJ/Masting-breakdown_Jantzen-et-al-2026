@@ -108,9 +108,9 @@ summary_4thIt <- summary_allModels %>%
                 fct_variable = factor(variable,
                                       levels = c("meanTempT0", "maxTempT1", "maxTempT2", "PrecT0", "PrecT1", "PrecT2"))) 
 
-## Figure S2: AIC patterns of fourth iteration ####
+## Figure S3: AIC patterns of fourth iteration ####
 
-## plot temerpature and precipitation separately, otherwise the the difference in AIC is so big that patterns in temperature become invisible
+## plot temperature and precipitation separately, otherwise the the difference in AIC is so big that patterns in temperature become invisible
 
 ggpubr::ggarrange(
   
@@ -146,7 +146,7 @@ ggpubr::ggarrange(
 )
 
 ggplot2::ggsave(plot = ggplot2::last_plot(),
-                file =  here::here("plots", "Figure_S2.png"),
+                file =  here::here("plots", "Figure_S3.png"),
                 units = "cm", dpi = 600, width = 40, height = 25)
 
 
@@ -347,6 +347,25 @@ bind_rows(tibble::enframe(coef(summary(m_final))$cond [, 4], name =  "variable",
          check_cor_pvalue = cor_pvalue < 0.001) # check whether correct p-values are still highly significant
 
 
+## compare final model with base model (model with windows defined in literature)
+
+m_lit <- di %>% 
+  dplyr::mutate(TreeID = as.factor(TreeID)) %>% 
+  dplyr::left_join(di_win_4It %>%  dplyr::select(WinterYear, TotalNuts_T1, TreeID), by = c("WinterYear", "TreeID")) %>% 
+  glmmTMB::glmmTMB(TotalNuts ~
+                   z_temp_meanGrow + z_maxTempSummer_T1 + z_maxTempSummer_T2 +
+                   z_prec_Grow +  z_prec_Summer_T1 + z_prec_Summer_T2 + 
+                   TotalNuts_T1 + (1|TreeID),
+                 data = .,
+                 family = nbinom2(link = "log"),
+                 ziformula = ~ .)
+
+summary(m_lit)
+### prec_Grow and prec_T1 are no longer significant in both parts of the model, maxTemp_T2 no longer in zero-inflated part of the model
+
+
+# compare both models based on their AIC
+AIC(m_final) - AIC(m_lit)
 
 ## Check model fit by comparing observed with predicted values ####
 
@@ -459,7 +478,7 @@ ggplot2::ggplot(fit_final_year, ggplot2::aes(x = ord_year, y = pred.nuts_realCli
 # Supplementary analysis --------------------------------------------------
 
 
-## Supporting Information B.4.: Calculate resource reserves ####
+## Supporting Information D: Calculate resource reserves ####
 ## Following analysis in: Kelly et al., 2025
 
 # get ordinal year (as a subsitute for cummulative years, because it better accounts for the missing year in the data)
@@ -547,7 +566,7 @@ m_final_resource3 <- glmmTMB::glmmTMB(TotalNuts ~
 
 summary(m_final_resource3)
 
-## Supporting information C: Check for colinearity of the climate explanatory variables ####
+## Supporting information C.4.: Check for colinearity of the climate explanatory variables ####
 
 # reduce climate variables of final model to only one observation per year 
 ## (because di_win_4It duplicates each climate variable per year for each tree)
@@ -566,10 +585,10 @@ df_cor <- di_win_4It %>%
 # calculate correlation matrix (Pearson correlation)
 cor_matrix <- cor(df_cor)
 
-# Figure S4: Visualize colinearity matrix ####
+# Figure S5: Visualize colinearity matrix ####
 
 # as we use the corrplot package to do so, which is based on base R, we cannot use ggplot
-png(here::here("plots", "Figure_S4.png"), 
+png(here::here("plots", "Figure_S5.png"), 
     width = 15, height = 10, units = "cm", res = 600, bg = "white")
 
 corrplot::corrplot(cor_matrix, method = "color", type = "lower", 

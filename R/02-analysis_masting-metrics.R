@@ -320,7 +320,7 @@ df_CVi <- df_CVi %>%
   dplyr::mutate(pred_p.CVi = mean_p.CVi_predict$fit,
                 pred_p.CVi.se = mean_p.CVi_predict$se.fit)
 
-## Figure S1 - Pearson CVi ####
+## Figure S2 - Pearson CVi ####
 p_p.CVi <- ggplot2::ggplot(df_CVi, ggplot2::aes(x = year_windowOpen)) +
   ggplot2::geom_point(data = df_CVi_win, ggplot2::aes(y = p.CVi), alpha = 0.4, colour = col_per_tree, size = 1) +
   ggplot2::geom_errorbar(ggplot2::aes(ymax = mean_p.CVi + sd_p.CVi, ymin = (mean_p.CVi - sd_p.CVi)), alpha = 0.8) +
@@ -332,8 +332,8 @@ p_p.CVi <- ggplot2::ggplot(df_CVi, ggplot2::aes(x = year_windowOpen)) +
                 y = "Pearson CVi (mean)") +
   ggplot2::theme_classic(base_size = 17) 
 
-# save figure for supplementary material (Figure S1)
-ggplot2::ggsave(plot = p_p.CVi,  filename = here::here("plots", "Figure_S1.png"), 
+# save figure for supplementary material (Figure S2)
+ggplot2::ggsave(plot = p_p.CVi,  filename = here::here("plots", "Figure_S2.png"), 
                 width = 20, height = 12, unit = "cm")
 
 
@@ -390,4 +390,29 @@ ggpubr::ggarrange(
 
 # save Figure 1 of main text
 ggplot2::ggsave(plot = ggplot2::last_plot(), filename = here::here("plots", "Figure_1.png"), 
+                width = 45, height = 30, unit = "cm")
+
+
+
+# VI. Supplements Figure S1 -----------------------------------------------
+
+di_plot <- di %>% 
+  # add missing year for visualisation
+  dplyr::bind_rows(c(WinterYear = c(1982))) %>% 
+  group_by(TreeID) %>% 
+  add_tally() %>% 
+  ungroup()
+
+ggplot2::ggplot(di_plot, 
+                ggplot2::aes(x = as.factor(WinterYear), y = TreeID)) +
+  ggplot2::geom_raster(ggplot2::aes(fill = as.factor(TreeID)), hjust = 0, vjust = 0) +
+  ggplot2::scale_fill_manual(values = c(rep(c("#048A81", "#BCEBCB"), 40), "#048A81")) +
+  ggplot2::labs(x = "Year") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "none",
+                 axis.text.x = element_text(hjust = 1),
+                 axis.text.y = element_text(vjust = 1)) 
+
+ggplot2::ggsave(plot = ggplot2::last_plot(), 
+                filename = here::here("plots", "Figure_S1.png"), 
                 width = 45, height = 30, unit = "cm")
