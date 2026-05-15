@@ -21,6 +21,8 @@ library(rstudioapi)
 library(glmmTMB)
 library(lme4)
 library(corrplot)
+library(here)
+library(performance)
 
 # get colour palette for plots
 source(here::here("R", "colour_palette.R"))
@@ -366,6 +368,12 @@ summary(m_lit)
 
 # compare both models based on their AIC
 AIC(m_final) - AIC(m_lit)
+
+# compare the variance explained by the the literature- and the final model 
+## look at the marginal R^2 as that includes random and fixed effects; 
+## component = "all" includes conditional and zero-inflated part of the model
+performance::r2(m_final, component = "all")
+performance::r2(m_lit, , component = "all")
 
 ## Check model fit by comparing observed with predicted values ####
 
