@@ -1,6 +1,12 @@
 # README
 
-This repository contains all analyses and data used for the analyses in Jantzen et al. The renv lock file allows to reproduce the packages used for the original analyses. Script should be run within this R project, as they refer to relative paths within the project to read and write data and plots (by using the here package).
+This repository contains all code and data used for the analyses in Jantzen et al. (2026) (DOI: 10.1002/ece3.73809). 
+Please be aware that the data in this repository is a derivative, as used for analyses, of the full, openly accessible dataset on beechnut production in the Netherlands that can be found on DataverseNL under the DOI: 10.34894/TQY74M.
+
+
+## How to use
+
+The renv lock file allows to reproduce the packages adn their versions as used for the original analyses. Scripts should be run within this R project, as they refer to relative paths within the project to read and write data and plots (by using the here package).
 
 ## Structure
 
