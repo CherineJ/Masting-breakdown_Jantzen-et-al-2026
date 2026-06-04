@@ -78,8 +78,8 @@ p_windows <- sens_wind %>%
   ggplot2::ggplot(ggplot2::aes(x = value, y = fct_variable, colour = fct_variable, shape = fct_variable)) +
   # add invisible points for creating a common legend with other panels of this figure
   ggplot2::geom_point(size = 0, alpha = 0)  +
-  ggplot2::geom_line(linewidth = 4) +
-  ggplot2::theme_classic(base_size = 17) +
+  ggplot2::geom_line(linewidth = 2) +
+  ggplot2::theme_classic(base_size = 9) +
   ggplot2::labs(x = "Day of year", y = "", colour = "", shape = "") +
   ggplot2::theme(legend.position = "bottom") +
   ggplot2::xlim(c(79, 265)) +
@@ -87,12 +87,11 @@ p_windows <- sens_wind %>%
   ggplot2::scale_shape_manual(values = shape_pal) +
   ggplot2::geom_vline(xintercept = 172, linetype = "dotted") +
   ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1,
-                                                 override.aes = list(linewidth = 2)),
-                  shape = ggplot2::guide_legend(override.aes = list(alpha = 1, size = 4))) +
+                                                 override.aes = list(linewidth = 1)),
+                  shape = ggplot2::guide_legend(override.aes = list(alpha = 1, size = 2))) +
   # add labels for calendar dates to the data points
-  ggplot2::geom_text(ggplot2::aes(label = cal_Start), hjust = 0.7, vjust = 2, show.legend = FALSE, size = 3) +
-  ggplot2::geom_text(ggplot2::aes(label = cal_End), hjust = 0.3, vjust = 2, show.legend = FALSE, size = 3) 
-
+  ggplot2::geom_text(ggplot2::aes(label = cal_Start), hjust = 0.7, vjust = 2, show.legend = FALSE, size = 1.5) +
+  ggplot2::geom_text(ggplot2::aes(label = cal_End), hjust = 0.3, vjust = 2, show.legend = FALSE, size = 1.5) 
 
 
 ## AIC patterns of sliding window runs per climate variable ####
@@ -252,15 +251,15 @@ df_plot_clim <- d_tempInWin %>%
 # Figure 2: panel b (trends in temperature) #####
 panel_b_temp <- ggplot2::ggplot(df_plot_clim, 
                                 ggplot2::aes(x = year, y = value, colour = temperature_variable, shape = temperature_variable)) +
-  ggplot2::geom_point(size = 2.5) +
-  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT1), linewidth = 1.5, colour = col_pal %>% pluck("maxTempT1")) +
-  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT0), linewidth = 1.5, colour = col_pal %>% pluck("meanTempT0")) +
+  ggplot2::geom_point(size = 1.25) +
+  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT1), linewidth = 0.75, colour = col_pal %>% pluck("maxTempT1")) +
+  ggplot2::geom_line(ggplot2::aes(y = pred.realtempT0), linewidth = 0.75, colour = col_pal %>% pluck("meanTempT0")) +
   ggplot2::geom_point(data = d_tempInWin %>% 
-                        tidyr::pivot_longer(cols = "maxTempT2", names_to = "temperature_variable"), size = 2.5) +
+                        tidyr::pivot_longer(cols = "maxTempT2", names_to = "temperature_variable"), size = 1.25) +
   ggplot2::geom_smooth(data = d_tempInWin %>% 
-                         tidyr::pivot_longer(cols = "maxTempT2", names_to = "temperature_variable"), method = "lm", linetype = 8, se = FALSE, linewidth = 1.5) +
+                         tidyr::pivot_longer(cols = "maxTempT2", names_to = "temperature_variable"), method = "lm", linetype = 8, se = FALSE, linewidth = 0.75) +
   ggplot2::labs(x = "Year", y = "Mean daily temperature [°C]", colour = "", shape = "") +
-  ggplot2::theme_classic(base_size = 17) +
+  ggplot2::theme_classic(base_size = 9) +
   ggplot2::scale_colour_manual(values = col_pal) + 
   ggplot2::scale_shape_manual(values = shape_pal) +
   ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1)) +
@@ -272,14 +271,14 @@ panel_b_temp <- ggplot2::ggplot(df_plot_clim,
 panel_c_temp <- ggplot2::ggplot(d_tempInWin %>% 
                                   tidyr::pivot_longer(cols = c("PrecT0", "PrecT1", "PrecT2"), names_to = "prec_variable"), 
                                 ggplot2::aes(x = year, y = value, colour = prec_variable, shape = prec_variable)) +
-  ggplot2::geom_point(size = 2.5) +
+  ggplot2::geom_point(size = 1.25) +
   ggplot2::labs(x = "Year", y = "Daily precipitation sum [mm]", colour = "", shape = "") +
-  ggplot2::theme_classic(base_size = 17) +
+  ggplot2::theme_classic(base_size = 9) +
   ggplot2::scale_y_continuous(breaks = c(seq(0, 350, by = 50))) + 
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 10))) +
   ggplot2::scale_colour_manual(values = col_pal) + 
   ggplot2::scale_shape_manual(values = shape_pal) +
-  ggplot2::geom_smooth(method = "lm", linetype = 8, se = FALSE, linewidth = 1.5) +
+  ggplot2::geom_smooth(method = "lm", linetype = 8, se = FALSE, linewidth = 0.75) +
   ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1))
 
 
@@ -302,13 +301,13 @@ ggpubr::ggarrange(
   ggpubr::ggarrange(
     
     # panel a
-    ggpubr::ggarrange(p_windows, labels = "a"),
+    ggpubr::ggarrange(p_windows, labels = "a", font.label = list(size = 9)),
     
     ggpubr::ggarrange(
       
       panel_b_temp, panel_c_temp,
       
-      legend = "none", ncol = 1, nrow = 2, labels = c("b", "c")),
+      legend = "none", ncol = 1, nrow = 2, labels = c("b", "c"), font.label = list(size = 9)),
     widths = c(1.5, 1)),
   
   # add common legend as "plot"
@@ -319,9 +318,7 @@ ggpubr::ggarrange(
 
 ggplot2::ggsave(plot = ggplot2::last_plot(), 
                 file = here::here("plots", "Figure_3.png"), 
-                units = "cm", height = 25, width = 35, dpi = 600)
-
-
+                units = "mm", height = 129, width = 180, dpi = 900)
 
 # Analyse drivers of seed production -------------------------------------------
 
@@ -373,7 +370,7 @@ AIC(m_final) - AIC(m_lit)
 ## look at the marginal R^2 as that includes random and fixed effects; 
 ## component = "all" includes conditional and zero-inflated part of the model
 performance::r2(m_final, component = "all")
-performance::r2(m_lit, , component = "all")
+performance::r2(m_lit, component = "all")
 
 ## Check model fit by comparing observed with predicted values ####
 
@@ -388,15 +385,18 @@ fit_final$pred.nuts_realClim <- predict(m_final, type = "response")
 
 ## Figure 4 - panel a: Observed and fitted values ####
 Fig_4a <- ggplot2::ggplot(fit_final, ggplot2::aes(x = TotalNuts, y = pred.nuts_realClim, colour = WinterYear)) +
-  ggplot2::geom_point(size = 2.5, alpha = 0.5) +
+  ggplot2::geom_point(size = 1.5, alpha = 0.5) +
   ggplot2::xlim(0, 2600) +
   ggplot2::ylim(0, 2600) +
   ggplot2::scale_colour_viridis_c(option = "H") +
   ggplot2::geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
   ggplot2::labs(y = "Predicted number nuts [per m²]", x = "Observed number nuts [per m²]", colour = "Year") +
-  ggplot2::theme(legend.position = "right") +
-  ggplot2::theme_minimal(base_size = 17) +
-  ggplot2::theme(legend.position = c(0.15, 0.85))
+  ggplot2::theme_minimal(base_size = 9) +
+  ggplot2::theme(legend.position = c(0.15, 0.85),
+                 legend.title = element_text(size = 9), 
+                 legend.text = element_text(size = 7),
+                 legend.key.height = unit(0.45, 'cm'),
+                 legend.key.width = unit(0.4, 'cm')) 
 
 # get correlation coefficient of observed and fitted values
 cor(fit_final$TotalNuts, fit_final$pred.nuts_realClim, method = "spearman")
@@ -416,26 +416,28 @@ cor(pop_Total$pop_TotalNuts, pop_Total$pop_pred.nuts_realClim)
 
 ## Figure 4 - panel b: Temporal patterns of model predictions and observed values
 Fig_4b <- ggplot2::ggplot(fit_final, ggplot2::aes(x = WinterYear)) +
-  ggplot2::geom_point(ggplot2::aes(y = pred.nuts_realClim, group = TreeID, colour = "Model predictions"), alpha = 0.2, size = 1) +
-  ggplot2::geom_point(ggplot2::aes(y = TotalNuts, group = TreeID, colour = "Observed"), alpha = 0.2, size = 1) +
-  ggplot2::geom_line(ggplot2::aes(y = pred.nuts_realClim, group = TreeID, colour = "Model predictions"), linewidth = 0.5, alpha = 0.1) +
-  ggplot2::geom_line(ggplot2::aes(y = TotalNuts, group = TreeID, colour = "Observed"), linewidth = 0.5, alpha = 0.1) +
+  ggplot2::geom_point(ggplot2::aes(y = pred.nuts_realClim, group = TreeID, colour = "Model predictions"), alpha = 0.2, size = 0.5) +
+  ggplot2::geom_point(ggplot2::aes(y = TotalNuts, group = TreeID, colour = "Observed"), alpha = 0.2, size = 0.5) +
+  ggplot2::geom_line(ggplot2::aes(y = pred.nuts_realClim, group = TreeID, colour = "Model predictions"), linewidth = 0.25, alpha = 0.1) +
+  ggplot2::geom_line(ggplot2::aes(y = TotalNuts, group = TreeID, colour = "Observed"), linewidth = 0.25, alpha = 0.1) +
   ggplot2::labs(x = "Year", y = "Total number beechnuts [per m²]", colour = "") +
-  ggplot2::theme_classic(base_size = 17) +
-  ggplot2::geom_line(data = pop_Total, ggplot2::aes(y = pop_pred.nuts_realClim, colour = "Model predictions"), linewidth = 1.5) +
-  ggplot2::geom_line(data = pop_Total, ggplot2::aes(y = pop_TotalNuts, colour = "Observed"), linewidth = 1.5) +
+  ggplot2::theme_classic(base_size = 9) +
+  ggplot2::geom_line(data = pop_Total, ggplot2::aes(y = pop_pred.nuts_realClim, colour = "Model predictions"), linewidth = 0.75) +
+  ggplot2::geom_line(data = pop_Total, ggplot2::aes(y = pop_TotalNuts, colour = "Observed"), linewidth = 0.75) +
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 10))) +
   ggplot2::scale_colour_manual(values = c("Model predictions" = col_pred.real_clim, "Observed" = col_per_tree)) +
-  ggplot2::theme(legend.position = c(0.85, 0.95))
+  ggplot2::theme(legend.position = c(0.85, 0.95),
+                 legend.title = element_text(size = 9), 
+                 legend.text = element_text(size = 7))
 
 
 ## Figure 4: arrange panels to make final figure ####
 ggpubr::ggarrange(Fig_4a, Fig_4b, 
-                  ncol = 2, nrow = 1, labels = "auto", widths = c(0.7, 1))
+                  ncol = 2, nrow = 1, labels = "auto", widths = c(0.7, 1), font.label = list(size = 9))
 
 ggplot2::ggsave(plot = ggplot2::last_plot(), 
                 file = here::here("plots", "Figure_4.png"), 
-                units = "cm", width = 30, height = 15, dpi = 600)
+                units = "mm", width = 180, height = 110, dpi = 900)
 
 
 # Test for unexplained variation in the model -----------------------------

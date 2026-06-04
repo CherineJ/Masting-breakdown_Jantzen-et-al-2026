@@ -115,9 +115,9 @@ pop_mean_nuts <- di %>%
 p_bci <- ggplot2::ggplot(pop_mean_nuts, ggplot2::aes(x = WinterYear, y = pop_mean)) +
   ggplot2::geom_line(data = di, ggplot2::aes(x = WinterYear, y = TotalNuts, group = as.factor(TreeID)), 
                      colour = col_per_tree, alpha = 0.2) +
-  ggplot2::geom_line(colour = col_pop_mean, linewidth = 1.5) +
-  ggplot2::geom_point(size = 3, colour = col_pop_mean) +
-  ggplot2::theme_classic(base_size = 17) +
+  ggplot2::geom_line(colour = col_pop_mean, linewidth = 0.75) +
+  ggplot2::geom_point(size = 1.5, colour = col_pop_mean) +
+  ggplot2::theme_classic(base_size = 7) +
   ggplot2::labs(y = "Total number of beechnuts per m²", x = "Year") +
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 5))) +
   ggplot2::scale_y_continuous(breaks = c(seq(0, max(di$TotalNuts), by = 500)))
@@ -125,13 +125,13 @@ p_bci <- ggplot2::ggplot(pop_mean_nuts, ggplot2::aes(x = WinterYear, y = pop_mea
 
 # Panel b: probability of producing no beechnuts at all in a year (population-level)
 p_zi_prob <- ggplot2::ggplot(pred_zi, ggplot2::aes(x = WinterYear, y = predicted)) +
-  ggplot2::geom_point(data = di, ggplot2::aes(x = WinterYear, y = prob_zi), size = 2, alpha = 0.1, colour = col_per_tree) +
+  ggplot2::geom_point(data = di, ggplot2::aes(x = WinterYear, y = prob_zi), size = 1, alpha = 0.1, colour = col_per_tree) +
   ggplot2::geom_ribbon(ggplot2::aes(x = WinterYear, y = predicted, ymin = conf.low, ymax = conf.high), 
                        fill = nut_trend_split, alpha = 0.2) +
-  ggplot2::geom_line(linewidth = 1.5, colour = nut_trend_split, alpha = 0.7) +
-  ggplot2::theme_classic(base_size = 17) +
+  ggplot2::geom_line(linewidth = 0.75, colour = nut_trend_split, alpha = 0.7) +
+  ggplot2::theme_classic(base_size = 7) +
   ggplot2::labs(y = "p of zero-years", x = "Year") +
-  ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 10)))
+  ggplot2::scale_x_continuous(breaks = c(seq(1775, 2025, by = 10)))
 
 
 # Panel c: beechnut trend conditional model (how many nuts are produced, if they are produced; population-level)
@@ -139,13 +139,13 @@ p_nut_trends <- ggplot2::ggplot() +
   ggplot2::geom_ribbon(data = pred_cond, ggplot2::aes(x = WinterYear, y = predicted, ymin = conf.low, ymax = conf.high), 
                        fill = nut_trend_split, alpha = 0.2) +
   ggplot2::geom_line(data = pred_cond, ggplot2::aes(x = WinterYear, y = predicted), 
-                     linewidth = 1.5, colour = nut_trend_split, linetype = "dashed", alpha = 0.7) +
+                     linewidth = 0.75, colour = nut_trend_split, linetype = "dashed", alpha = 0.7) +
   ggplot2::geom_point(data = pop_mean_nuts, ggplot2::aes(x = WinterYear, y = pop_mean), 
-                      size = 2, colour = col_per_tree, alpha = 0.1) +
-  ggplot2::geom_line(data = pred_trend, ggplot2::aes(x = WinterYear, y = predicted), linewidth = 1.5) +
+                      size = 1, colour = col_per_tree, alpha = 0.1) +
+  ggplot2::geom_line(data = pred_trend, ggplot2::aes(x = WinterYear, y = predicted), linewidth = 0.75) +
   ggplot2::geom_ribbon(data = pred_trend, ggplot2::aes(x = WinterYear, y = predicted, ymin = conf.low, ymax = conf.high), 
                        alpha = 0.3) +
-  ggplot2::theme_classic(base_size = 17) +
+  ggplot2::theme_classic(base_size = 7) +
   ggplot2::labs(y = "Beechnuts per m²", x = "Year") +
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 10)))
 
@@ -153,13 +153,12 @@ p_nut_trends <- ggplot2::ggplot() +
 # combine three panels
 plots_trends <- ggpubr::ggarrange(
   
-  ggpubr::ggarrange(p_bci, labels = "a", font.label = list(size = 18, face = "bold")),
+  ggpubr::ggarrange(p_bci, labels = "a", font.label = list(size = 8, face = "bold")),
   ggpubr::ggarrange(p_zi_prob, p_nut_trends, ncol = 1, nrow = 2, labels = c("b", "c"), 
-                    font.label = list(size = 18, face = "bold")),
+                    font.label = list(size = 7, face = "bold")),
   
   widths = c(1.5, 1)
 )
-
 
 # III. Synchrony analysis ------------------------------------------------------
 
@@ -249,17 +248,16 @@ pop_synchrony <- pop_synchrony %>%
 
 ## Figure 1, panel d: plot the population mean of synchrony ####
 p_sync <- ggplot2::ggplot(pop_synchrony, ggplot2::aes(x = year_windowOpen, y = pop_meanRho)) +
-  ggplot2::geom_point(size = 1, data = df_synchrony, ggplot2::aes(y = meanRho), alpha = 0.4, colour = col_per_tree) +
+  ggplot2::geom_point(size = 0.5, data = df_synchrony, ggplot2::aes(y = meanRho), alpha = 0.4, colour = col_per_tree) +
   ggplot2::geom_errorbar(ggplot2::aes(ymax = ymax_popMean, ymin = (pop_meanRho - pop_sdRho)), alpha = 0.8) +
-  ggplot2::geom_point(size = 3) +
-  ggplot2::geom_line(ggplot2::aes(y = pred.sync), linewidth = 1.5, colour = col_pop_mean) +
+  ggplot2::geom_point(size = 1.5) +
+  ggplot2::geom_line(ggplot2::aes(y = pred.sync), linewidth = 0.75, colour = col_pop_mean) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = pred.sync - pred.sync.se, ymax =  pred.sync + pred.sync.se), alpha = 0.3) +
   ggplot2::labs(x = "Start year of 5-year window",
                 y = "Between-tree synchrony") +
-  ggplot2::theme_classic(base_size = 17) +
+  ggplot2::theme_classic(base_size = 7) +
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 5))) + 
   ggplot2::geom_hline(yintercept = 0, linetype = "dotted") 
-
 
 
 # IV. Inter annual variation (CVi) -----------------------------------------
@@ -364,15 +362,15 @@ df_CVi <- df_CVi %>%
 
 ## Figure 1 - panel e: Kvålseth CVi ####
 p_k.CVi <- ggplot2::ggplot(df_CVi, ggplot2::aes(x = year_windowOpen)) +
-  ggplot2::geom_point(data = df_CVi_win, ggplot2::aes(y = k.CVi), alpha = 0.4, colour = col_per_tree, size = 1) +
+  ggplot2::geom_point(data = df_CVi_win, ggplot2::aes(y = k.CVi), alpha = 0.4, colour = col_per_tree, size = 0.5) +
   ggplot2::geom_errorbar(ggplot2::aes(ymax = ymax_sd_k.CVi, ymin = (mean_k.CVi - sd_k.CVi)), alpha = 0.8) +
-  ggplot2::geom_point(ggplot2::aes(y = mean_k.CVi), size = 3) +
-  ggplot2::geom_line(ggplot2::aes(y = pred_k.CVi), colour = col_pop_mean, linewidth = 1.5) +
+  ggplot2::geom_point(ggplot2::aes(y = mean_k.CVi), size = 1.5) +
+  ggplot2::geom_line(ggplot2::aes(y = pred_k.CVi), colour = col_pop_mean, linewidth = 0.75) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = pred_k.CVi - pred_k.CVi.se, ymax =  pred_k.CVi + pred_k.CVi.se), alpha = 0.3) +
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 5))) +
   ggplot2::labs(x = "Start year of 5-year window",
                 y = "Kvålseth CVi (mean)") +
-  ggplot2::theme_classic(base_size = 17) 
+  ggplot2::theme_classic(base_size = 7) 
 
 
 # V. Make final figure 1 -------------------------------------------------------
@@ -382,7 +380,7 @@ ggpubr::ggarrange(
   
   plots_trends, 
   ggpubr::ggarrange(p_sync, p_k.CVi, labels = list("d", "e"), 
-                    font.label = list(size = 18, face = "bold")),
+                    font.label = list(size = 8, face = "bold")),
   
   nrow = 2, ncol = 1, heights = c(1.5, 1)
   
@@ -390,8 +388,7 @@ ggpubr::ggarrange(
 
 # save Figure 1 of main text
 ggplot2::ggsave(plot = ggplot2::last_plot(), filename = here::here("plots", "Figure_1.png"), 
-                width = 45, height = 30, unit = "cm")
-
+                width = 180, height = 120, unit = "mm", dpi = 900)
 
 
 # VI. Supplements Figure S1 -----------------------------------------------

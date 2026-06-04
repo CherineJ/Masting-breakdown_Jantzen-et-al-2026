@@ -152,8 +152,8 @@ pred_m_pred2 <- sat_pred %>%
 
 ## Figure 2 - panel c: Satiation effect ####
 plot_sat <- ggplot2::ggplot(data = pred_m_pred2, ggplot2::aes(x = x, y = predicted)) +
-  ggplot2::geom_point(data = eos, ggplot2::aes(x = TotalNuts, y = prop_pred), alpha = 0.1, size = 2) +
-  ggplot2::geom_line(ggplot2::aes(colour = as.factor(Year)), linewidth = 1.5) +
+  ggplot2::geom_point(data = eos, ggplot2::aes(x = TotalNuts, y = prop_pred), alpha = 0.1, size = 1) +
+  ggplot2::geom_line(ggplot2::aes(colour = as.factor(Year)), linewidth = 0.7) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high, 
                                     colour = as.factor(Year), fill = as.factor(Year)), alpha = 0.1) +
   ggplot2::labs(x = "Total number of beechnuts", 
@@ -162,8 +162,12 @@ plot_sat <- ggplot2::ggplot(data = pred_m_pred2, ggplot2::aes(x = x, y = predict
                 colour = "Year", fill = "Year") +
   ggplot2::scale_colour_manual(values = col_years) + 
   ggplot2::scale_fill_manual(values = col_years) +
-  ggplot2::theme_classic(base_size = 17) +
-  ggplot2::theme(plot.title = ggplot2::element_text(size = 17, hjust = 0.5))
+  ggplot2::theme_classic(base_size = 7) +
+  ggplot2::theme(plot.title = ggplot2::element_text(size = 7, hjust = 0.5),
+                 legend.title = element_text(size = 7), 
+                 legend.text = element_text(size = 7),
+                 legend.key.height = unit(4, 'mm'),
+                 legend.key.width = unit(4, 'mm'))
 
 
 # predict for year effect on proportion predated
@@ -180,14 +184,14 @@ pred_pred_year <- as.data.frame(pred_pred_year) %>%
 
 ## Figure 2 - panel a: Predation ratio over time ####
 plot_starv_year <- ggplot2::ggplot(data = pred_pred_year, ggplot2::aes(x = WinterYear, y = predicted)) +
-  ggplot2::geom_point(data = eos, ggplot2::aes(x = WinterYear, y = prop_pred), alpha = 0.1, size = 2) +
+  ggplot2::geom_point(data = eos, ggplot2::aes(x = WinterYear, y = prop_pred), alpha = 0.1, size = 1) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high), alpha = 0.2) +
-  ggplot2::geom_line(linewidth = 1.5) +
+  ggplot2::geom_line(linewidth = 0.7) +
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 5))) +
   ggplot2::theme(legend.position = "none") +
   ggplot2::labs(x = "Year", 
                 y = "Proportion of predated nuts") +
-  ggplot2::theme_classic(base_size = 17)
+  ggplot2::theme_classic(base_size = 7)
 
 
 ## Starvation effect ----------------------------------------------------
@@ -225,8 +229,8 @@ pred_starv_pred <- starv_pred %>%
 
 # Figure 2 - panel d: Starvation effect ####
 plot_starv <- ggplot2::ggplot(data = pred_starv_pred, ggplot2::aes(x = x, y = predicted)) +
-  ggplot2::geom_point(data = eos_starv, ggplot2::aes(x = ln_starvation, y = prop_pred), size = 2, alpha = 0.1) +
-  ggplot2::geom_line(ggplot2::aes(colour = as.factor(Year)), linewidth = 1.5) +
+  ggplot2::geom_point(data = eos_starv, ggplot2::aes(x = ln_starvation, y = prop_pred), size = 1, alpha = 0.1) +
+  ggplot2::geom_line(ggplot2::aes(colour = as.factor(Year)), linewidth = 0.7) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high, 
                                     colour = as.factor(Year), fill = as.factor(Year)), alpha = 0.1) +
   ggplot2::labs(x = "Ln Seed production ratio (T/T-1)", 
@@ -235,8 +239,12 @@ plot_starv <- ggplot2::ggplot(data = pred_starv_pred, ggplot2::aes(x = x, y = pr
                 colour = "Year", fill = "Year") +
   ggplot2::scale_colour_manual(values = col_years) + 
   ggplot2::scale_fill_manual(values = col_years) +
-  ggplot2::theme_classic(base_size = 17) +
-  ggplot2::theme(plot.title = ggplot2::element_text(size = 17, hjust = 0.5))
+  ggplot2::theme_classic(base_size = 7) +
+  ggplot2::theme(plot.title = ggplot2::element_text(size = 7, hjust = 0.5),
+                 legend.title = element_text(size = 7), 
+                 legend.text = element_text(size = 7),
+                 legend.key.height = unit(4, 'mm'),
+                 legend.key.width = unit(4, 'mm'))
 
 
 
@@ -284,14 +292,15 @@ pred_poll <- ggeffects::predict_response(m_poll2,
 
 ## Figure 2 - panel e: Pollination efficiency ####
 plot_poll <- ggplot2::ggplot(data = pred_poll, ggplot2::aes(x = x, y = predicted)) +
-  ggplot2::geom_point(data = eos, ggplot2::aes(x = CVp, y = prop_poll), size = 2, alpha = 0.1) +
-  ggplot2::geom_line(linewidth = 1.5) +
+  ggplot2::geom_point(data = eos, ggplot2::aes(x = CVp, y = prop_poll), size = 1, alpha = 0.1) +
+  ggplot2::geom_line(linewidth = 0.7) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high), alpha = 0.2) +
   ggplot2::labs(x = "Inverse of synchrony (CVp)", 
                 y = "Proportion of pollinated nuts", 
                 title = "Pollination efficiency") +
-  ggplot2::theme_classic(base_size = 17) +
-  ggplot2::theme(plot.title = ggplot2::element_text(size = 17, hjust = 0.5))
+  ggplot2::theme_classic(base_size = 7) +
+  ggplot2::theme(plot.title = ggplot2::element_text(size = 7, hjust = 0.5))
+
 
 
 # predict for the year effect
@@ -305,21 +314,21 @@ pred_poll_time <- as.data.frame(pred_poll_time) %>%
                      dplyr::select("WinterYear", "ord_year"), 
                    by = c("x" = "ord_year"))
 
+
 ## Figure 2 - panel b: Porportion pollinated over time ####
 plot_poll_year <- ggplot2::ggplot(data = pred_poll_time, ggplot2::aes(x = WinterYear, y = predicted)) +
-  ggplot2::geom_point(data = eos, ggplot2::aes(x = WinterYear, y = prop_poll), alpha = 0.1, size = 2) +
-  ggplot2::geom_line(linewidth = 2) +
+  ggplot2::geom_point(data = eos, ggplot2::aes(x = WinterYear, y = prop_poll), alpha = 0.1, size = 1) +
+  ggplot2::geom_line(linewidth = 1) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = conf.low, ymax = conf.high), alpha = 0.2) +
   ggplot2::labs(x = "Year", 
                 y = "Proportion of pollinated nuts") +
   ggplot2::scale_x_continuous(breaks = c(seq(1975, 2025, by = 5))) +
-  ggplot2::theme_classic(base_size = 17)
+  ggplot2::theme_classic(base_size = 7)
 
 
 # Make final figure 2 -------------------------------------------------------
 
 # aligning the panels with different legends requires some tweaking
-
 # Give all plots the same outer margins to avoid small offsets
 common_margin <- ggplot2::theme(plot.margin = grid::unit(c(4, 4, 4, 4), "pt"))
 plot_sat <- plot_sat + common_margin
@@ -341,7 +350,7 @@ leg_poll_plot  <- ggpubr::as_ggplot(leg_poll__grob)
 
 # make lower half of Figure by arranging EOS panels
 EOS_plots <- ggpubr::ggarrange(plot_sat_noleg, plot_starv_noleg, plot_poll_noleg,
-                               ncol = 3, nrow = 1, labels = c("c", "d", "e"))  
+                               ncol = 3, nrow = 1, labels = c("c", "d", "e"), font.label = list(size = 8))  
 
 # Put the two extracted legends side-by-side in their own row
 legend_row <- ggpubr::ggarrange(leg_pred_plot, leg_poll_plot, ncol = 2, widths = c(1, 0.4))
@@ -349,14 +358,14 @@ legend_row <- ggpubr::ggarrange(leg_pred_plot, leg_poll_plot, ncol = 2, widths =
 # Make Figure 2
 ggpubr::ggarrange(
   
-  ggpubr::ggarrange(plot_starv_year, plot_poll_year, labels = c("a", "b")),
+  ggpubr::ggarrange(plot_starv_year, plot_poll_year, labels = c("a", "b"), font.label = list(size = 8)),
   
   EOS_plots, legend_row, 
   
   ncol = 1, nrow = 3, heights = c(0.8, 1, 0.12)
 )
- 
+
 
 # save Figure 2 as PNG
 ggplot2::ggsave(plot = ggplot2::last_plot(), file = here::here("plots", "Figure_2.png"), 
-               units = "cm", height = 25, width = 40, dpi = 600)
+                units = "mm", height = 113, width = 180, dpi = 900)
