@@ -1,7 +1,7 @@
 # README
 
-This repository contains all code and data used for the analyses in Jantzen et al. (2026) (DOI: 10.1002/ece3.73809). 
-Please be aware that the data in this repository is a derivative, as used for analyses, of the full, openly accessible dataset on beechnut production in the Netherlands that can be found on DataverseNL under the DOI: 10.34894/TQY74M.
+This repository contains all code and data used for the analyses in Jantzen et al. (2026) (DOI: [10.1002/ece3.73809](https://doi.org/10.1002/ece3.73809)). 
+Please be aware that the data in this repository is a derivative, as used for analyses, of the full, openly accessible dataset on beechnut production in the Netherlands that can be found on DataverseNL under the DOI: [10.34894/TQY74M](https://doi.org/10.34894/TQY74M).
 
 
 ## How to use
